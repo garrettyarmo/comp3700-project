@@ -117,13 +117,28 @@ def buy_shares(user_id):
     conn.commit()
 
     print('Successful purchase: You bought {} shares of {} stock for ${}!'.format(purchase_quantity, company_name, purchase_price))
- 
+
+def sell_shares(user_id):
+    database = "comp3700.db"
+    conn = create_connection(database)
+    curr = conn.cursor()
+    company_ticker = input('Enter Ticker to sell: ')
+    company_ticker = company_ticker.upper()
+
+    if position_exists(conn, company_ticker) == 0:
+        print('You do not own any shares of {}!\n'.format(company_ticker))
+        sell_shares(user_id)
+
+    position = curr.execute('SELECT * FROM portfolio WHERE ticker = \'{}\' AND portfolio_id = {}'.format(company_ticker, user_id)).fetchone()
+    for position in position:
+        print(position)
+
 def handle_user_transactions(user_id):
     action = input('Buy or Sell?: ')
     if action.lower() == 'buy':
         buy_shares(user_id) 
     elif action.lower() == 'sell':
-        pass
+        sell_shares(user_id)
 
 def view_portfolio(user_id):
     
@@ -133,7 +148,7 @@ def view_portfolio(user_id):
 
     positions = curr.execute('SELECT * FROM portfolio WHERE id={}'.format(user_id))
     print('\nPortfolio Summary for User Number: {}\n'.format(user_id))
-    print("{:<6} {:<20} {:<8}".format('Number of Shares','Company Name', 'Ticker'))
+    print("{:<10} {:<20} {:<8}".format('# of Shares','Company Name', 'Ticker'))
     print('-----------------------------------------------------')
     for position in positions:
-        print("{:<6} {:<20} ${:<8}".format(position[4], position[2], position[3]))
+        print("{:<10} {:<20} ${:<8}".format(position[4], position[2], position[3]))
