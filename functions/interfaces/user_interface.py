@@ -95,7 +95,6 @@ def buy_shares(user_id):
         buy_shares(user_id)
 
     if position_exists(conn, user_id, company_ticker) == 1:
-        print('Position Exists...')
         outstanding_shares = outstanding_shares + purchase_quantity
         curr3.execute('UPDATE portfolio SET share_count = share_count + ? WHERE company_ticker = ? AND portfolio_id = ?',
         (purchase_quantity, company_ticker, user_id))
@@ -122,16 +121,50 @@ def sell_shares(user_id):
     database = "comp3700.db"
     conn = create_connection(database)
     curr = conn.cursor()
+    curr1 = conn.cursor()
+    curr2 = conn.cursor()
+    curr3 = conn.cursor()
     company_ticker = input('Enter Ticker to sell: ')
     company_ticker = company_ticker.upper()
 
-    if position_exists(conn, company_ticker) == 0:
+    if position_exists(conn, user_id, company_ticker) == 0:
         print('You do not own any shares of {}!\n'.format(company_ticker))
         sell_shares(user_id)
 
-    position = curr.execute('SELECT * FROM portfolio WHERE ticker = \'{}\' AND portfolio_id = {}'.format(company_ticker, user_id)).fetchone()
-    for position in position:
-        print(position)
+    position = curr.execute('SELECT * FROM portfolio WHERE company_ticker = \'{}\' AND portfolio_id = {}'.format(company_ticker, user_id)).fetchone()
+    print('You own {} shares of {}'.format(position[4], position[2]))
+
+    company = curr1.execute('SELECT * FROM companies WHERE ticker = \'{}\''.format(company_ticker)).fetchone()
+    company_name = company[1]
+    share_price = company[6]
+    
+    valid_quan = False
+    while not valid_quan:
+        sell_quantity = float(input('How many shares would you like to sell?: '))
+        if sell_quantity > position[4]:
+            print('You only own {} shares, please enter a valid quantity!'.format(position[4]))
+        else:
+            valid_quan = True
+
+    user = curr2.execute('SELECT * FROM users WHERE id = {}'.format(user_id)).fetchone()
+    user_balance = user[2]
+
+    curr3.execute('UPDATE portfolio SET share_count = share_count - ? WHERE company_ticker = ? AND portfolio_id = ?',
+        (sell_quantity, company_ticker, user_id))
+    conn.commit()
+
+    curr3.execute('UPDATE companies SET outstanding_shares = outstanding_shares - ? WHERE ticker = ?',
+        (sell_quantity, company_ticker))
+    conn.commit()
+    
+    sell_price = sell_quantity * share_price
+    new_balance = user_balance + sell_price
+    curr3.execute('UPDATE users SET account_balance = ? WHERE id = ?',
+        (new_balance, user_id))
+    conn.commit()
+
+    print('Successful sale: You sold {} shares of {} stock for ${}!'.format(sell_quantity, company_name, sell_price))
+
 
 def handle_user_transactions(user_id):
     action = input('Buy or Sell?: ')
