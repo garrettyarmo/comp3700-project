@@ -18,7 +18,6 @@ while not valid_input:
         ipo_token = new_company.requestIPO()
         if ipo_token:
             new_company.submitIPO()
-            valid_input = True
 
     elif login_type.lower() == 'user':
         login_or_signup = input('Enter "login" to login to an existing account: \nEnter "signup" to create an account: \n')
@@ -41,7 +40,9 @@ while not valid_input:
             
 valid_input = False
 while not valid_input:
-    action = input('Enter "0" to view your portfolio\nEnter "1" to buy shares\nEnter "2" to sell shares\nEnter "exit" to leave the program\n')
+    print('__________________________________')
+    print('_______/\______Menu______/\_______')
+    action = input('Enter "0" to view your portfolio\nEnter "1" to buy shares\nEnter "2" to sell shares\nEnter "exit" to leave the program\n__________________________________\n')
     if action.lower() == '0':
         user.viewPortfolio()
     elif action.lower() == '1':
