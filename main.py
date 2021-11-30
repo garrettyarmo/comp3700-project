@@ -1,41 +1,59 @@
-from functions.database.initialize_db import initialize_database
-from functions.interfaces.ipo_interface import validate_ipo
-from functions.interfaces.user_interface import create_new_user, handle_user_transactions, login_existing_user, view_portfolio, view_public_companies
+import json
+from functions.interfaces.company import Company, viewPublicCompanies
+from functions.interfaces.user import User
 
-def main():
+print('\n______________Welcome to Team 17\'s Stock Brokerage System______________\n')
 
-    initialize_database()
+valid_input = False
+while not valid_input:
 
-    inp = input('\n\n*************** Hello and Welcome to our Stock Brokerage System ***************\n\nType "User" to login to a user account\nType "Company" to take a company public: ')
-    if inp.lower() == 'user':
+    login_type = input('Enter "company" to take a company public\nEnter "user" to login or sign up\n')
 
-        user_input = input('\nEnter "login" if you\'re a returning user\nEnter "signup" to create an account\nEnter "exit" to quit: ')
-        if user_input.lower() == 'exit':
-            pass
-        elif user_input.lower() == 'signup':
-            user_id = create_new_user()
-        elif user_input.lower() == 'login':
-            user_id = login_existing_user()
+    if login_type.lower() == 'company':
+        new_company = Company()
+        new_company.setName()
+        new_company.setTicker()
+        new_company.setShares()
+        new_company.setPrice()
+        ipo_token = new_company.requestIPO()
+        if ipo_token:
+            new_company.submitIPO()
+            valid_input = True
+
+    elif login_type.lower() == 'user':
+        login_or_signup = input('Enter "login" to login to an existing account: \nEnter "signup" to create an account: \n')
+        if login_or_signup.lower() == 'signup':
+            user = User()
+            user.setID()
+            user.setName()
+            user.setBalance()
+            user.saveNewUser()
+            users = user.listRecords("name")
+            valid_input = True
+            
+        elif login_or_signup.lower() == 'login':
+            user = User()
+            user.populate_exisiting_user()
+            print('\n_____Welcome back {}_____\n'.format(user.name))
+            valid_input = True
         else:
-            print('***Invalid Input***')
-            main()
-        
-        exit_condition = True
-        while (exit_condition):
-            user_input = input('\nEnter "0" - To View Public Companies\nEnter "1" - To View Portfolio\nEnter "2" - To Initiate a Transaction\n')
-            if user_input == '0':
-                view_public_companies()
-            elif user_input == '1':
-                view_portfolio(user_id)
-            elif user_input == '2':
-                handle_user_transactions(user_id)
-
-    elif inp.lower() == 'company':
-        validate_ipo()
-        main()
+            valid_input = False
+            
+valid_input = False
+while not valid_input:
+    action = input('Enter "0" to view your portfolio\nEnter "1" to buy shares\nEnter "2" to sell shares\nEnter "exit" to leave the program\n')
+    if action.lower() == '0':
+        user.viewPortfolio()
+    elif action.lower() == '1':
+        viewPublicCompanies()
+        user.buyShares()
+    elif action.lower() == '2':
+        user.viewPortfolio()
+        user.sellShares()
+    elif action.lower() == 'exit':
+        print('Goodbye!')
+        valid_input = True
     else:
-        print('***Invalid Input***')
-        main()
+        print('Invalid Input: please try again.\n')
 
-if __name__ == "__main__":
-    main()
+    
