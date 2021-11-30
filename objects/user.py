@@ -86,10 +86,11 @@ class User:
                     self.name = i["name"]
                     self.balance = i["balance"]
                     self.positions = i["positions"]
-                    break
+                    return True
         else:
             print('User ID does not exist, please try again.\n')
-            self.populate_exisiting_user()
+            return False
+        
 
     def viewPortfolio(self):
 

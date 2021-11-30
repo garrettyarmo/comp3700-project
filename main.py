@@ -1,6 +1,5 @@
-import json
-from functions.interfaces.company import Company, viewPublicCompanies
-from functions.interfaces.user import User
+from objects.company import Company, viewPublicCompanies
+from objects.user import User
 
 print('\n______________Welcome to Team 17\'s Stock Brokerage System______________\n')
 
