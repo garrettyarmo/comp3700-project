@@ -1,16 +1,3 @@
 {
-    "users": [
-        {
-            "id": "1",
-            "name": "Garrett",
-            "balance": 100.0,
-            "positions": []
-        },
-        {
-            "id": "2",
-            "name": "Hannah",
-            "balance": 1000000.0,
-            "positions": []
-        }
-    ]
+    "users": []
 }

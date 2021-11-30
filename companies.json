@@ -1,28 +1,3 @@
 {
-    "companies": [
-        {
-            "name": "Apple",
-            "ticker": "APPL",
-            "total_shares": 1000,
-            "outstanding_shares": 0,
-            "initial_price": 26.5,
-            "current_price": 26.5
-        },
-        {
-            "name": "Tesla",
-            "ticker": "TSLA",
-            "total_shares": 1000,
-            "outstanding_shares": 0,
-            "initial_price": 50.0,
-            "current_price": 50.0
-        },
-        {
-            "name": "Amazon",
-            "ticker": "AMAZ",
-            "total_shares": 1000,
-            "outstanding_shares": 0,
-            "initial_price": 71.9,
-            "current_price": 71.9
-        }
-    ]
+    "companies": []
 }
