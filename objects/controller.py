@@ -1,3 +1,7 @@
+from .user import User
+from .portfolio import Portfolio
+from .company import Company
+
 class Controller:
 	def __init__(self, dataProvider):
 		self.dataProvider = dataProvider
@@ -29,7 +33,7 @@ class Controller:
 		return self.loggedInUser is not None
 
 	def logout(self):
-		self.dataProvider.updateUser(self.loggedInUser)
+		self.dataProvider.updateUser(self.loggedInUser)		#Todo: track if anything actually changed
 		self.loggedInUser = None
 
 	def doesUserNameExist(self, userName):
@@ -42,7 +46,7 @@ class Controller:
 		return any(x for x in self.stockExchange.companies if x.name == name)
 
 	def getUserReport(self):
-		return self.loggedInUser.generateReport()
+		return self.loggedInUser.generateReport(self.stockExchange)
 
 	#Throws a ValueError if transaction cannot be carried out. Returns the purchase cost if successful
 	def buyShares(self, ticker, quantity):
@@ -57,7 +61,7 @@ class Controller:
 				company.available_shares -= quantity
 				self.loggedInUser.balance -= cost
 				self.loggedInUser.portfolio.adjustPosition(ticker, quantity)
-				break
+				return cost
 
 	def getOwnedQuantity(self, ticker):
 		return self.loggedInUser.portfolio.getOwnedQuantity(ticker)
@@ -71,7 +75,16 @@ class Controller:
 				company.available_shares += quantity
 				self.loggedInUser.balance += cost
 				self.loggedInUser.portfolio.adjustPosition(ticker, -quantity)
-				break
+				return cost
+
+	def getCompaniesTable(self):
+		output = '\nAll Current Public Companies\n\n'
+		output += "{:<20} {:<8} {:<16} {:<8}\n".format('Company Name','Ticker','Current Price', 'Available Shares')
+		output += '---------------------------------------------------------------------\n'
+		for i in self.stockExchange.companies:
+			output += "{:<20} {:<8} ${:<16} {:<8}\n".format(i.name, i.ticker, i.current_price, i.available_shares)
+		output += '\n'
+		return output
 
 	def notifyExit(self):
 		self.dataProvider.updateStockExchange(self.stockExchange)

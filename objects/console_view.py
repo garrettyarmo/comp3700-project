@@ -1,18 +1,15 @@
 class ConsoleView:
-	def __init__(self, controller)
+	def __init__(self, controller):
 		self.controller = controller
 
 	def run(self):
 		print('\n______________Welcome to Team 17\'s Stock Brokerage System______________\n')
 
-		while(true):
+		while(True):
 			login_type = input('Enter "company" to take a company public\nEnter "user" to login or sign up\nEnter "exit" to leave the program\n')
 
 			if login_type.lower() == 'company':
 				self.createIPO()
-				ipo_token = new_company.requestIPO()
-				if ipo_token:
-					new_company.submitIPO()
 
 			elif login_type.lower() == 'user':
 				login_or_signup = input('Enter "login" to login to an existing account: \nEnter "signup" to create an account: \n')
@@ -42,7 +39,7 @@ class ConsoleView:
 		if action.lower() == '0':
 			self.printPortfolio()
 		elif action.lower() == '1':
-			viewPublicCompanies()
+			self.viewPublicCompanies()
 			self.buyShares()
 		elif action.lower() == '2':
 			self.printPortfolio()
@@ -125,7 +122,7 @@ class ConsoleView:
 				buy_quan = int(input('Enter number of shares to purchase: '))
 				if buy_quan > 0:
 					break
-				else
+				else:
 					print('Quantity must be greater than zero.')
 
 			try:
@@ -150,5 +147,10 @@ class ConsoleView:
 				print('Your request of {} shares exceeds your {} owned shares\nPlease try again\n'.format(sell_quan, num_owned))
 				self.sellShares()
 			else:
-				sale_total = self.controller.sellShares()
+				sale_total = self.controller.sellShares(sell_ticker, sell_quan)
 				print('\nYou sold {} shares of {} for ${}!\n'.format(sell_quan, sell_ticker, sale_total))
+		else:
+			print('This ticker does not exist, please try again.\n')
+
+	def viewPublicCompanies(self):
+		print(self.controller.getCompaniesTable())
