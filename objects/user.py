@@ -8,7 +8,8 @@ class User:
 	#Returns a string
 	def generateReport(self, stockExchange):
 		output = 'Portfolio Summary for User {}\n'.format(self.name)
-		output += 'Cash available to trade: ${}\n\n'.format(self.balance)
+		output += 'Cash available to trade: ${}\n'.format(self.balance)
+		output += 'Portfolio net worth: ${}\n\n'.format(self.portfolio.getTotalValue(stockExchange))
 		output += "{:<14} {:<20} {:<12} {:<10}\n".format('# of Shares','Company Name', 'Ticker', 'Stock Price')
 		output += '-----------------------------------------------------------------\n'
 		for position in self.portfolio.positions:

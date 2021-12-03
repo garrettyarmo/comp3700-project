@@ -22,3 +22,11 @@ class Portfolio:
 				return position.shareCount
 
 		return 0
+
+	def getTotalValue(self, stockExchange):
+		total = 0.0
+		for position in self.positions:
+			company = stockExchange.getCompany(position.ticker)
+			total += company.current_price * position.shareCount
+
+		return total
